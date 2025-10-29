@@ -6,6 +6,7 @@ using org.acplt.oncrpc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Timers;
@@ -273,7 +274,7 @@ namespace NFSLibrary.Protocols.V4
             if (_ProtocolV4 == null)
             { throw new NFSConnectionException("NFS Client not connected!"); }
 
-            ItemFullName = ItemFullName.Replace(".\\.\\", ".\\");
+            ItemFullName = ItemFullName.Replace($".{Path.DirectorySeparatorChar}.{Path.DirectorySeparatorChar}", $".{Path.DirectorySeparatorChar}");
 
             if (useFHCache)
                 if (cached_attrs.ContainsKey(ItemFullName))
@@ -288,12 +289,12 @@ namespace NFSLibrary.Protocols.V4
                 return attributes;
             }
 
-            if (ItemFullName == ".\\.")
+            if (ItemFullName == $".{Path.DirectorySeparatorChar}.")
                 return new NFSAttributes(0, 0, 0, NFSItemTypes.NFDIR, new NFSPermission(7, 7, 7), 4096, _rootFH.value);
 
             nfs_fh4 currentItem = _rootFH;
             int initial = 1;
-            String[] PathTree = ItemFullName.Split(@"\".ToCharArray());
+            String[] PathTree = ItemFullName.Split(Path.DirectorySeparatorChar);
 
             if (useFHCache)
             {
@@ -503,7 +504,7 @@ namespace NFSLibrary.Protocols.V4
             {
                 _CurrentItem = FileFullName;
 
-                String[] PathTree = FileFullName.Split(@"\".ToCharArray());
+                String[] PathTree = FileFullName.Split(Path.DirectorySeparatorChar);
 
                 string ParentDirectory = System.IO.Path.GetDirectoryName(FileFullName);
                 NFSAttributes ParentAttributes = GetItemAttributes(ParentDirectory);
@@ -552,7 +553,7 @@ namespace NFSLibrary.Protocols.V4
                 string ParentDirectory = System.IO.Path.GetDirectoryName(FileFullName);
                 NFSAttributes ParentAttributes = GetItemAttributes(ParentDirectory);
 
-                String[] PathTree = FileFullName.Split(@"\".ToCharArray());
+                String[] PathTree = FileFullName.Split(Path.DirectorySeparatorChar);
 
                 //make open here
                 List<nfs_argop4> ops = new List<nfs_argop4>();
@@ -672,7 +673,7 @@ namespace NFSLibrary.Protocols.V4
             {
                 _CurrentItem = FileFullName;
 
-                String[] PathTree = FileFullName.Split(@"\".ToCharArray());
+                String[] PathTree = FileFullName.Split(Path.DirectorySeparatorChar);
 
                 string ParentDirectory = System.IO.Path.GetDirectoryName(FileFullName);
                 NFSAttributes ParentAttributes = GetItemAttributes(ParentDirectory);

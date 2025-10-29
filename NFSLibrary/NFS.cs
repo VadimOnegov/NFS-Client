@@ -4,6 +4,7 @@ using NFSLibrary.Protocols.V3;
 using NFSLibrary.Protocols.V4;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using static System.String;
@@ -315,10 +316,10 @@ namespace NFSLibrary
             {
                 foreach (string item in GetItemList(directoryFullName, true))
                 {
-                    if (IsDirectory($"{directoryFullName}\\{item}"))
-                    { DeleteDirectory($"{directoryFullName}\\{item}", recursive); }
+                    if (IsDirectory($"{directoryFullName}{Path.DirectorySeparatorChar}{item}"))
+                    { DeleteDirectory($"{directoryFullName}{Path.DirectorySeparatorChar}{item}", recursive); }
                     else
-                    { DeleteFile($"{directoryFullName}\\{item}"); }
+                    { DeleteFile($"{directoryFullName}{Path.DirectorySeparatorChar}{item}"); }
                 }
             }
 
@@ -665,7 +666,7 @@ namespace NFSLibrary
         {
             if (!IsNullOrEmpty(targetFileFullName))
             {
-                if (targetFileFullName.LastIndexOf('\\') + 1 == targetFileFullName.Length)
+                if (targetFileFullName.LastIndexOf(Path.DirectorySeparatorChar) + 1 == targetFileFullName.Length)
                 {
                     targetFileFullName = System.IO.Path.Combine(targetFileFullName, System.IO.Path.GetFileName(sourceFileFullName));
                 }
@@ -757,7 +758,7 @@ namespace NFSLibrary
         {
             directoryFullName = CorrectPath(directoryFullName);
 
-            return $"{directoryFullName}\\{fileName}";
+            return $"{directoryFullName}{Path.DirectorySeparatorChar}{fileName}";
         }
 
         /// <summary>
@@ -777,13 +778,13 @@ namespace NFSLibrary
             if (IsNullOrEmpty(pathEntry))
                 return pathEntry;
 
-            string[] pathList = pathEntry.Split('\\');
+            string[] pathList = pathEntry.Split(Path.DirectorySeparatorChar);
 
-            pathEntry = Join("\\", pathList.Where(item => !IsNullOrEmpty(item)).ToArray());
+            pathEntry = Join(Path.DirectorySeparatorChar, pathList.Where(item => !IsNullOrEmpty(item)).ToArray());
 
             if (pathEntry.IndexOf('.') != 0)
             {
-                pathEntry = Concat(".\\", pathEntry);
+                pathEntry = Path.Combine(".", pathEntry);
             }
 
             return pathEntry;

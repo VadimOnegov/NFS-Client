@@ -6,6 +6,7 @@ using NFSLibrary.Protocols.V2.RPC.Mount;
 using org.acplt.oncrpc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 
 namespace NFSLibrary.Protocols.V2
@@ -230,7 +231,7 @@ namespace NFSLibrary.Protocols.V2
                 ItemFullName = ".";
 
             NFSHandle currentItem = _RootDirectoryHandleObject;
-            String[] PathTree = ItemFullName.Split(@"\".ToCharArray());
+            String[] PathTree = ItemFullName.Split(Path.DirectorySeparatorChar);
 
             for (int pC = 0; pC < PathTree.Length; pC++)
             {
